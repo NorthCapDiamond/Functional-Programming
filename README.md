@@ -12,7 +12,7 @@ SRFI-64
 
 ## Линтер 
 
-None ( guile-lint???)
+guile-lint?
 
 ## Книга 
 
