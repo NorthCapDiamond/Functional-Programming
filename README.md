@@ -65,7 +65,7 @@ Code example:
 - https://www.gnu.org/software/guile/
 - https://jeko.frama.io/en/hello.html
 - https://user42.tuxfamily.org/guile-lint/index.html
-  
+- https://habr.com/ru/companies/tbank/articles/267015/  
 
 
 
