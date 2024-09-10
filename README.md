@@ -48,8 +48,7 @@ Code example:
 #!/usr/bin/guile -s 
 !#
 
-(use-modules (srfi srfi-64)
-             )
+(use-modules (srfi srfi-64))
 
 (display "Hello, Dmitry Drobysh\n")
 
