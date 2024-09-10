@@ -1,12 +1,20 @@
 # Gulie
 
-## Выбранный язык : Guile (Scheme)
+## Выбранный язык 
 
-## Фреймворк для тестирования : SRFI-64
+Guile (Scheme)
 
-## Линтер : None ( guile-lint???)
+## Фреймворк для тестирования
 
-## Книга : The Scheme programming language,Fourth edition.
+SRFI-64
+
+## Линтер 
+
+None ( guile-lint???)
+
+## Книга 
+
+The Scheme programming language,Fourth edition.
 
 R. Kent Dybvig
 
