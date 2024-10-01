@@ -31,5 +31,5 @@
 (define (ones-counter list-ones-zeros)
   (fold + 0 list-ones-zeros))
 
-;(display (ones-counter(replace-pairs (gen-calendar 1901 1 1 2000 12 31 3))))
-;(newline)
+(display (ones-counter(replace-pairs (gen-calendar 1901 1 1 2000 12 31 3))))
+(newline)

@@ -31,4 +31,4 @@ def solution(year_id, month_id, day_id):
 
     return sun_first
 
-print(solution(int(input("Enter year ")), int(input("Enter Month ")), int(input("Enter day "))))
+print(solution(1901, 1, 1))

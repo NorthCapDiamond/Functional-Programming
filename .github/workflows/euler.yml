@@ -54,3 +54,21 @@ jobs:
           echo test, and deploy your project.
       - name: See files
         run: ls -l
+        
+      - name: 12. Py
+        run: cd src && python3 task_12.py
+      - name: 12. Endless list
+        run: cd src && guile 12_endlist.scm
+      - name: 12. Recursion
+        run: cd src && guile 12_rec.scm
+      - name: 12. Guile + C
+        run: cd src && ./12_withc
+      - name: 19. Py
+        run: cd src && python3 task_19.py
+      - name: 19. Tailrec
+        run: cd src && guile 19_tailrec.scm
+      - name: 19. Map + Fold
+        run: cd src && guile 19_mapfold.scm
+      - name: 19. Guile + C
+        run: cd src && ./19_withc
+  

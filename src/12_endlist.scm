@@ -26,5 +26,5 @@
     (car list-a)
     (solver (force (cdr list-a)) divs)))
 (define triangles (triangle-numbers 1 1))
-(display (solver triangles (30)))
+(display (solver triangles 30))
 (newline)

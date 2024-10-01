@@ -21,4 +21,4 @@ def solution(n):
         if ans>=n:
             return current
 
-print(solution(int(input("Enter number\n"))))
+print(solution(30))

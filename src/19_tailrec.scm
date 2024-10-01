@@ -17,5 +17,5 @@
 	   (if (and(= day_id 1) (> year_id 1900))
 	     (solution year_id month_id (+ day_id 7) year_limit month_limit day_limit (+ sunny 1))
 	     (solution year_id month_id (+ day_id 7) year_limit month_limit day_limit sunny)))) sunny))
-;(display (string-append "Answer is " (number->string(solution 1900 1 0 2000 12 31 0)) "\n"))
+(display (string-append "Answer is " (number->string(solution 1900 1 0 2000 12 31 0)) "\n"))
 
