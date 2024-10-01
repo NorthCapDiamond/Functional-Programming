@@ -25,6 +25,11 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v4
 
+      - name: install guile
+        run: sudo apt install guile-3.0
+      - name: test
+        run: echo (display "Hello") > test.scm && guile test.scm
+
       # Runs a single command using the runners shell
       - name: Run a one-line script
         run: echo Hello, world!
