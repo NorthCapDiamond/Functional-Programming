@@ -1,5 +1,5 @@
 (import (rnrs base)
-	(only (srfi :1) fold))
+	(only (srfi :1) fold-right))
 
 (define (divider? a b)
   (zero? (modulo a b)))
@@ -29,7 +29,7 @@
        calendar-list))
 
 (define (ones-counter list-ones-zeros)
-  (fold + 0 list-ones-zeros))
+  (fold-right + 0 list-ones-zeros))
 
 (display (ones-counter(replace-pairs (gen-calendar 1901 1 1 2000 12 31 3))))
 (newline)
