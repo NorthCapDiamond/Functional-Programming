@@ -2,9 +2,9 @@ name: Ubuntu 20.04 w/ Guile 3.0
 
 on:
   push:
-    branches: ["master"]
+    branches: ["main"]
   pull_request:
-    branches: ["master"]
+    branches: ["main"]
 
 jobs:
   build:
