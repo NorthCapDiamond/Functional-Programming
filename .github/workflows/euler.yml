@@ -27,9 +27,15 @@ jobs:
 
       - name: install guile
         run: sudo apt install guile-3.0
-      - name: test
-        run: echo (display "Hello") > test.scm && guile test.scm
-
+      - name: Check-exists guile
+        run: echo "(display \"Hello\")" > tmp.scm | guile tmp.scm
+      - name: Setup Python
+        uses: actions/setup-python@v5.2.0
+      - name: Check-exists Python
+        run: echo "print(1)" > tmp.scm | python3 tmp.scm
+      - name: clean
+        run: rm tmp.scm
+        
       # Runs a single command using the runners shell
       - name: Run a one-line script
         run: echo Hello, world!
