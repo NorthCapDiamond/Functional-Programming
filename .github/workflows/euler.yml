@@ -35,10 +35,12 @@ jobs:
         run: echo "print(1)" > tmp.scm | python3 tmp.scm
       - name: clean
         run: rm tmp.scm
+      - name: install PyLint
+        run: pip install pylint
         
       # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
+      - name: Run PyLint
+        run: find src/ -type f -name "*.py" | xargs pylint 
 
       # Runs a set of commands using the runners shell
       - name: Run a multi-line script
