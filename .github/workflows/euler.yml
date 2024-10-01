@@ -27,6 +27,8 @@ jobs:
 
       - name: install guile
         run: sudo apt install guile-3.0
+      - name: dev guile
+        run: sudo apt-get install guile-3.0-dev
       - name: Check-exists guile
         run: echo "(display \"Hello\")" > tmp.scm | guile tmp.scm
       - name: Setup Python
@@ -41,6 +43,9 @@ jobs:
       # Runs a single command using the runners shell
       - name: Run PyLint
         run: find src/ -type f -name "*.py" | xargs pylint 
+
+      - name: Use gcc
+        run: cd src && make
 
       # Runs a set of commands using the runners shell
       - name: Run a multi-line script
