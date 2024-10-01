@@ -1,6 +1,7 @@
 (define (divider? a b)
   (zero? (modulo a b)))
 
+
 (define (inner current i answer n)
   (if (>= i (sqrt current))
     (if (integer? (sqrt current))

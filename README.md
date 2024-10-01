@@ -35,7 +35,7 @@ is the first triangle number to have over five divisors.
 What is the value of the first triangle number to have over five hundred divisors?
 
 
-### Задача 12:
+### Задача 19:
 
 You are given the following information, but you may prefer to do some research for yourself.
 
