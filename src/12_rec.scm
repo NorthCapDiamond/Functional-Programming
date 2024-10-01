@@ -17,5 +17,5 @@
     (inner current 1 answer n)
     (solution (+ counter 1) (+ counter current 1) answer n)))
 
-;(display (string-append "Answer is " (number->string(solution 1 1 0 (read))) "\n"))
+(display (string-append "Answer is " (number->string(solution 1 1 0 (30))) "\n"))
 

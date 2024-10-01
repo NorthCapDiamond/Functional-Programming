@@ -13,9 +13,9 @@ int main(int argc, char** argv){
   tailrec = scm_variable_ref(scm_c_lookup("inner"));
 
 
-  printf("Enter your n\n");
-  uint64_t n;
-  scanf("%llu", &n);
+  //printf("Enter your n\n");
+  uint64_t n = 30;
+  //scanf("%lu", &n);
   uint64_t res = 0;
   uint64_t answer = 0;
   uint64_t counter = 0;
@@ -29,7 +29,7 @@ int main(int argc, char** argv){
 	  res = scm_to_int(scm_call_4(tailrec, scm_from_int(current), scm_from_int(1), scm_from_int(answer), scm_from_int(n)));
 
 	  if(res >= n){
-		  printf("Answer is %d\n", current);
+		  printf("Answer is %ld\n", current);
 		  break;
 	  }
 

@@ -1,4 +1,4 @@
-CC = gcc
+CC = gcc -Wall -Werror
 CFLAGS = `pkg-config --cflags guile-3.0`
 LIBS=`pkg-config --libs guile-3.0`
 
