@@ -1,5 +1,7 @@
 (use-modules (srfi srfi-9) (srfi srfi-1) (srfi srfi-13))
+
 (use-modules (ice-9 format))
+
 (define-record-type
  <node>
  (make-node color left value right count)
@@ -9,16 +11,24 @@
  (value node-value)
  (right node-right)
  (count node-count))
+
 (define (node-constructor color left value right count)
   (cond
     ((or (eq? color #f) (eq? value #f)) #f)
     (else (make-node color left value right count))))
+
 (define (node->color node) (cond ((node? node) (node-color node)) (else #f)))
+
 (define (node->left node) (cond ((node? node) (node-left node)) (else #f)))
+
 (define (node->value node) (cond ((node? node) (node-value node)) (else #f)))
+
 (define (node->right node) (cond ((node? node) (node-right node)) (else #f)))
+
 (define (node->count node) (cond ((node? node) (node-count node)) (else #f)))
+
 (define (bool->string flag) (if flag "yes\n" "no\n"))
+
 (define (node->string node)
   (define (sub-node->string node)
     (if (not (node? node))
@@ -36,6 +46,7 @@
          (if (node->right node) (sub-node->string (node->right node)) "nil")
          ")")))
   (string-append (sub-node->string node) "\n"))
+
 (define (member? x node)
   (cond
     ((node? node)
@@ -45,6 +56,7 @@
          ((eq? x y) #t)
          (else (member? x (node->right node))))))
     (else #f)))
+
 (define (tree-count x node)
   (cond
     ((node? node)
@@ -54,6 +66,7 @@
          ((eq? x y) (node->count node))
          (else (tree-count x (node->right node))))))
     (else #f)))
+
 (define (recolor-black node)
   (cond ((eq? node #f) #f))
   (node-constructor
@@ -62,6 +75,7 @@
    (node->value node)
    (node->right node)
    (node->count node)))
+
 (define (balance node)
   (let ((mode-this node)
         (left (node->left node))
@@ -142,6 +156,7 @@
         (recolor-black right-right)
         (node->count right)))
       (else mode-this))))
+
 (define (insert x node)
   (define (inner-insert x node)
     (cond
@@ -170,6 +185,7 @@
          (inner-insert x (node->right node))
          (node->count node))))))
   (recolor-black (inner-insert x node)))
+
 (define (delete x node)
   (define (inner-delete x node)
     (let ((y (node->value node)))
@@ -188,6 +204,7 @@
                 (else (let ((fused (fuse (node->left node) (node->right node))))
                         (cond ((eq? (node->value fused) #f) #f) (else fused)))))))))
   (recolor-black (inner-delete x node)))
+
 (define (balL node)
   (let ((mode-this node) (left (node->left node)) (right (node->right node)))
     (cond
@@ -244,6 +261,7 @@
           (node->count right)))
         (node->count (node->left right))))
       (else mode-this))))
+
 (define (balR node)
   (let ((mode-this node) (left (node->left node)) (right (node->right node)))
     (cond
@@ -301,6 +319,7 @@
          (node->count mode-this))
         (node->count (node->right left))))
       (else mode-this))))
+
 (define (delL x node)
   (cond ((eq? node? node) #f #f))
   (let ((mode-this node) (left (node->left node)) (right (node->right node)))
@@ -325,6 +344,7 @@
                       right
                       (node->count mode-this))))
               (else mode-this))))))
+
 (define (delR x node)
   (cond ((eq? node? node) #f #f))
   (let ((mode-this node) (left (node->left node)) (right (node->right node)))
@@ -348,6 +368,7 @@
                           ((eq? (node->value after-delete) #f) #f)
                           (else after-delete)))
                       (node->count mode-this)))))))))
+
 (define (fuse tree1 tree2)
   (cond
     ((and (eq? (node? tree1) #f) (node? tree2)) tree2)
@@ -463,6 +484,7 @@
                          (node->count tree1))))
                  (else #f))))
             (else #f)))))
+
 (define (append-string str n)
   (cond
     ((= n 1) str)
@@ -471,6 +493,7 @@
               (string-append
                (string-append str "  ")
                (append-string str (- n 1)))))))
+
 (define (rbmset->string rbmset)
   (define (sub-rbmset->string rbmset amount)
     (if (node? rbmset)
@@ -485,22 +508,28 @@
            (sub-rbmset->string right (node->count right))))
         ""))
   (string-append (sub-rbmset->string rbmset (node->count rbmset)) "\n"))
+
 (define (create-rbmset value)
   (cond ((eq? value #f) #f) (else (insert value #f))))
+
 (define (append-rbmset value rbmset)
   (cond ((eq? value #f) rbmset) (else (insert value rbmset))))
+
 (define (append-rbmset-many value rbmset amount)
   (cond
     ((or (eq? value #f) (< amount 1)) rbmset)
     (else (append-rbmset-many value (insert value rbmset) (- amount 1)))))
+
 (define (remove-rbmset value rbmset)
   (cond ((eq? value #f) rbmset) (else (delete value rbmset))))
+
 (define (union-rbmset rbmset1 rbmset2)
   (cond
     ((and (eq? rbmset1 #f) (eq? rbmset2 #f)) #f)
     ((and (not (eq? rbmset1 #f)) (eq? rbmset2 #f)) rbmset1)
     ((and (eq? rbmset1 #f) (not (eq? rbmset2 #f))) rbmset2)
     (else (fuse rbmset1 rbmset2))))
+
 (define (filter-rbmset rbmset pred?)
   (define (sub-filter-rbmset newrmbset rbmset pred?)
     (let ((l (eq? (node? (node->left rbmset)) #t))
@@ -543,8 +572,10 @@
             (append-rbmset-many value newrmbset (node->count rbmset)))
            (else newrmbset))))))
   (sub-filter-rbmset #f rbmset pred?))
+
 (define (cons-n-times element lst n)
   (if (<= n 0) lst (cons element (cons-n-times element lst (- n 1)))))
+
 (define (rbmset->list rbmset)
   (define (sub-rbmset->list rbmset newlist)
     (let ((l (eq? (node? (node->left rbmset)) #t))
@@ -571,6 +602,7 @@
           (node->count rbmset)))
         ((not (and l r)) (cons-n-times value newlist (node->count rbmset))))))
   (cond ((eq? rbmset #f) '()) (else (sub-rbmset->list rbmset '()))))
+
 (define (map-rbmset rbmset f)
   (define (sub-map-rbmset newrmbset rbmset f)
     (let ((l (eq? (node? (node->left rbmset)) #t))
@@ -600,51 +632,72 @@
         ((not (and l r))
          (append-rbmset-many (f value) newrmbset (node->count rbmset))))))
   (sub-map-rbmset #f rbmset f))
+
 (define (left-fold-rbmset f acc lst) (fold f acc (rbmset->list lst)))
+
 (define (right-fold-rbmset f acc lst) (fold-right f acc (rbmset->list lst)))
+
 (define (hash-numbers lst)
   (let ((list-string (format #f "~s" lst)))
     (hash list-string 1000000000000000)))
+
 (define (compare rbmset1 rbmset2)
   (let ((list1 (rbmset->list rbmset1)) (list2 (rbmset->list rbmset2)))
     (eq? (hash-numbers list1) (hash-numbers list2))))
+
 (use-modules (srfi srfi-64))
+
 (display "Testing started\n")
+
 (define (display-and-test value2 value1 message)
   (display message)
   (newline)
   (test-equal value1 value2))
+
 (test-begin "create-rbmset")
+
 (display-and-test
  (create-rbmset 0)
  (node-constructor 'black #f 0 #f 1)
  "Create set with initial value")
+
 (display-and-test
  (create-rbmset #f)
  (node-constructor #f #f #f #f 1)
  "Create empty set")
+
 (test-end "create-rbmset")
+
 (newline)
+
 (test-begin "append-rbmset")
+
 (display-and-test
  (append-rbmset 1 #f)
  (node-constructor 'black #f 1 #f 1)
  "Add to empty set")
+
 (display-and-test
  (append-rbmset 4 (create-rbmset 2))
  (insert 4 (insert 2 #f))
  "Add to not empty set")
+
 (display-and-test
  (append-rbmset-many 5 (create-rbmset 2) 3)
  (insert 5 (insert 5 (insert 5 (create-rbmset 2))))
  "Add  multiple for one operation")
+
 (display-and-test
  (append-rbmset-many 5 (create-rbmset 2) 0)
  (create-rbmset 2)
  "Add  multiple for one operation (Actually zero)")
+
 (test-end "append-rbmset")
+
 (newline)
+
 (test-begin "remove-rbmset")
+
 (let ((t1 (append-rbmset 1 #f))
       (ans1 #f)
       (t2 (append-rbmset 2 (create-rbmset 1)))
@@ -676,9 +729,13 @@
    (remove-rbmset 1 t5)
    ans5
    "delete root but there is other node"))
+
 (test-end "remove-rbmset")
+
 (newline)
+
 (test-begin "union-rbmset")
+
 (let ((e #f)
       (t1 (append-rbmset 1 (append-rbmset 2 #f)))
       (t2 (append-rbmset 3 (append-rbmset 4 #f))))
@@ -686,11 +743,17 @@
   (display-and-test (union-rbmset t2 e) t2 "One Ok - One E")
   (display-and-test (union-rbmset e e) e "Both E")
   (display-and-test (union-rbmset t1 t2) (fuse t1 t2) "Both Ok"))
+
 (test-end "union-rbmset")
+
 (newline)
+
 (define (bigger-zero? value) (> value 0))
+
 (define (below-three? value) (< value 3))
+
 (test-begin "filter-rbmset")
+
 (let ((t (append-rbmset
           0
           (append-rbmset
@@ -724,11 +787,17 @@
    (rbmset->string (filter-rbmset (append-rbmset 7 t) odd?))
    " 3  5  7  7 \n"
    "Test odd with duplicates (root is doubled)"))
+
 (test-end "filter-rbmset")
+
 (newline)
+
 (define (x2 x) (* 2 x))
+
 (define (pow2 x) (* x x))
+
 (test-begin "map-rbmset")
+
 (let ((t (append-rbmset
           0
           (append-rbmset
@@ -754,9 +823,13 @@
    (rbmset->string (map-rbmset (append-rbmset 6 t) x2))
    " 0  4  6  10  12  12  14  20 \n"
    "Test X*2 but with duplicate (root)"))
+
 (test-end "map-rbmset")
+
 (newline)
+
 (test-begin "left-fold-rbmset")
+
 (let ((t (append-rbmset
           0
           (append-rbmset
@@ -777,9 +850,13 @@
    12600
    "Check fold on mul")
   (display-and-test (left-fold-rbmset + 0 t2) (fold + 0 '()) "Check on empty"))
+
 (test-end "left-fold-rbmset")
+
 (newline)
+
 (test-begin "right-fold-rbmset")
+
 (let ((t (append-rbmset
           0
           (append-rbmset
@@ -803,9 +880,13 @@
    (right-fold-rbmset + 0 t2)
    (fold-right + 0 '())
    "Check on empty"))
+
 (test-end "right-fold-rbmset")
+
 (newline)
+
 (test-begin "compare")
+
 (let ((t1 #f)
       (t2 (create-rbmset 2))
       (t3 (insert 1 (create-rbmset 2)))
@@ -823,8 +904,11 @@
    (compare t2 (create-rbmset 2))
    #t
    "Compare two the same (but second was created again)"))
+
 (test-end "compare")
+
 (test-begin "node-constructor")
+
 (let ((no-children (node-constructor 'black #f 0 #f 1))
       (left-child
        (node-constructor 'red (node-constructor 'black #f 1 #f 1) 2 #f 1))
@@ -917,9 +1001,13 @@
    (node->color (node->right both-children))
    'red
    "Check right child for both-children case"))
+
 (test-end "node-constructor")
+
 (newline)
+
 (test-begin "member?")
+
 (let ((tree (node-constructor
              'black
              (node-constructor
@@ -946,9 +1034,13 @@
   (display-and-test (member? 100 tree) #f "100 is not in tree")
   (display-and-test (member? 0 tree) #f "0 is not in tree")
   (display-and-test (member? 6 tree) #f "6 is not in tree"))
+
 (test-end "member?")
+
 (newline)
+
 (test-begin "recolor-black")
+
 (let ((tree1 (node-constructor 'red #f 1 #f 1))
       (tree2 (node-constructor 'black #f 1 #f 1)))
   (display-and-test
@@ -959,9 +1051,13 @@
    (node->color (recolor-black tree2))
    'black
    "Black must stay Black"))
+
 (test-end "recolor-black")
+
 (newline)
+
 (test-begin "balance")
+
 (let ((a (node-constructor 'black #f 1 #f 1))
       (b (node-constructor 'black #f 2 #f 1))
       (c (node-constructor 'black #f 3 #f 1))
@@ -1007,9 +1103,13 @@
     (display-and-test (balance t4) ans "Case4")
     (display-and-test (balance t5) t5 "Case5")
     (display-and-test (balance t6) t6 "Case6")))
+
 (test-end "balance")
+
 (newline)
+
 (test-begin "insert")
+
 (let ((tree (node-constructor 'black #f 7 #f 1)))
   (let ((t0 (insert 10 tree))
         (t1 (insert 5 tree))
@@ -1048,9 +1148,13 @@
      "Case4: add right-right")
     (display-and-test (tree-count 2 t5) 3 "Case5: Check amount of 2's")
     (display-and-test (tree-count 7 t5) 2 "Case5: Check amount of 7's")))
+
 (test-end "insert")
+
 (newline)
+
 (test-begin "balL")
+
 (let ((t1 (node-constructor 'black #f 1 #f 1))
       (t2 (node-constructor 'black #f 2 #f 1))
       (t3 (node-constructor 'black #f 3 #f 1))
@@ -1107,9 +1211,13 @@
     (display-and-test (balL ex1) ans1 "Case1")
     (display-and-test (balL ex2) ans2 "Case2")
     (display-and-test (balL ex3) ans3 "Case3")))
+
 (test-end "balL")
+
 (newline)
+
 (test-begin "balR")
+
 (let ((t1 (node-constructor 'black #f 1 #f 1))
       (t2 (node-constructor 'black #f 2 #f 1))
       (t3 (node-constructor 'black #f 3 #f 1))
@@ -1167,14 +1275,19 @@
     (display-and-test (balR ex1) ans1 "Case1")
     (display-and-test (balR ex2) ans2 "Case2")
     (display-and-test (balR ex3) ans3 "Case3")))
+
 (test-end "balR")
+
 (newline)
+
 (define (fuse-helper arg1 arg2 case1 case2 message)
   (let ((ans (fuse arg1 arg2)))
     (cond
       ((eq? ans case1) (display-and-test ans case1 message))
       (else (display-and-test ans case2 message)))))
+
 (test-begin "fuse")
+
 (let ((t1 (node-constructor 'black #f 1 #f 1))
       (t2 (node-constructor 'black #f 2 #f 1))
       (t3 (node-constructor 'black #f 3 #f 1))
@@ -1221,9 +1334,13 @@
        "Case4")
       (display-and-test (fuse t1 #f) t1 "Case5")
       (display-and-test (fuse #f t1) t1 "Case6"))))
+
 (test-end "fuse")
+
 (newline)
+
 (test-begin "delL")
+
 (let ((t1 (node-constructor 'black #f 1 #f 1))
       (t2 (node-constructor 'black #f 7 #f 1))
       (x 7)
@@ -1234,9 +1351,13 @@
         (ans2 (balL (node-constructor 'black (delete x t1) y t2 1))))
     (display-and-test (delL x test1) ans1 "Case1")
     (display-and-test (delL x test2) ans2 "Case2")))
+
 (test-end "delL")
+
 (newline)
+
 (test-begin "delR")
+
 (let ((t1 (node-constructor 'black #f 1 #f 1))
       (t2 (node-constructor 'black #f 7 #f 1))
       (x 5)
@@ -1247,9 +1368,13 @@
         (ans2 (balR (node-constructor 'black t1 y (delete x t2) 1))))
     (display-and-test (delR x test1) ans1 "Case1")
     (display-and-test (delR x test2) ans2 "Case2")))
+
 (test-end "delR")
+
 (newline)
+
 (test-begin "delete")
+
 (let ((t (insert
           2
           (insert 9 (insert 10 (insert 1 (insert 7 (insert 2 (insert 5 #f))))))))
@@ -1266,5 +1391,136 @@
   (display-and-test (delete 5 t2) #f "Case8")
   (display-and-test (delete 5 t3) (insert 5 #f) "Case9")
   (display-and-test (delete 5 t4) (insert 2 (insert 5 #f)) "Case10"))
+
 (test-end "delete")
+
 (newline)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

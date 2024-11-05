@@ -11,5 +11,7 @@
         (if (not (eof-object? sexp))
           (begin 
             (pretty-print sexp)
+            (newline)
             (loop (read fd))
+            (newline)
           #F)))))
