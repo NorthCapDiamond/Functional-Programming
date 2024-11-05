@@ -255,3 +255,11 @@
 ### Вывод
 Лабораторная работа получилось очень сложной, так как структура данных в моем варианте требует повышенного внимания. Стоит отметить, что использование pattern-matching не упрощает задачу в настоящей версии решения по причине испотзования собственных типов. 
 Хочу заметить, что написание тестов на языке Scheme происходит достаточно быстро, что позволило мне оперативно находиться ошибки и опечатки в исходном коде.
+
+### Источники 
+
+- https://abhiroop.github.io/Haskell-Red-Black-Tree/
+- https://www.gnu.org/software/guile/manual/html_node/Records.html
+- https://srfi.schemers.org/srfi-64/srfi-64.html
+- https://www.cs.usfca.edu/~galles/visualization/RedBlack.html
+  
