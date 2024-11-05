@@ -6,4 +6,4 @@ clean:
 format:
 	guile format.scm rb-bag.scm > rb-bag-format.scm
 run: 
-	guile rb-bag-format.scm
+	guile rb-bag.scm
