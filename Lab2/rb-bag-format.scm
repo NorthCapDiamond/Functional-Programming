@@ -563,7 +563,6 @@
             (append-rbmset-many
              value
              (sub-filter-rbmset newrmbset left pred?)
-             (node->count rbmset)
              (node->count rbmset)))
            (else (sub-filter-rbmset newrmbset left pred?))))
         ((not (and l r))
