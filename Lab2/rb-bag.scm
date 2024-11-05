@@ -662,7 +662,7 @@
 				[(and r (not l))
 					(sub-filter-rbmset (cond [(eq? (pred? value) #t) (append-rbmset-many value newrmbset (node->count rbmset))] [else newrmbset]) right pred?)]
 				[(and l (not r))
-					(cond [(eq? (pred? value) #t) (append-rbmset-many value (sub-filter-rbmset newrmbset left pred?) (node->count rbmset) (node->count rbmset))][else (sub-filter-rbmset newrmbset left pred?)])]
+					(cond [(eq? (pred? value) #t) (append-rbmset-many value (sub-filter-rbmset newrmbset left pred?) (node->count rbmset))][else (sub-filter-rbmset newrmbset left pred?)])]
 				[(not (and l r))
 					(cond [(eq? (pred? value) #t) (append-rbmset-many value newrmbset (node->count rbmset))] [else newrmbset])])))
 	(sub-filter-rbmset #f rbmset pred?))
