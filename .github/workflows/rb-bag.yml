@@ -36,8 +36,7 @@ jobs:
         run: cd Lab2 && make format
 
       - name: All Tests
-        run: |
-          cd Lab2 && make
-          cd Lab2 && make clean
+        run: cd Lab2 && make
+
           
   
