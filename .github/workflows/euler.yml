@@ -56,19 +56,19 @@ jobs:
         run: ls -l
         
       - name: 12. Py
-        run: cd src && python3 task_12.py
+        run: cd Lab1/src && python3 task_12.py
       - name: 12. Endless list
-        run: cd src && guile 12_endlist.scm
+        run: cd Lab1/src && guile 12_endlist.scm
       - name: 12. Recursion
-        run: cd src && guile 12_rec.scm
+        run: cd Lab1/src && guile 12_rec.scm
       - name: 12. Guile + C
-        run: cd src && ./12_withc
+        run: cd Lab1/src && ./12_withc
       - name: 19. Py
-        run: cd src && python3 task_19.py
+        run: cd Lab1/src && python3 task_19.py
       - name: 19. Tailrec
-        run: cd src && guile 19_tailrec.scm
+        run: cd Lab1/src && guile 19_tailrec.scm
       - name: 19. Map + Fold
-        run: cd src && guile 19_mapfold.scm
+        run: cd Lab1/src && guile 19_mapfold.scm
       - name: 19. Guile + C
-        run: cd src && ./19_withc
+        run: cd Lab1/src && ./19_withc
   
