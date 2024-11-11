@@ -85,17 +85,28 @@
 	 [(node? node) 
 		(let ([y (node->value node)])
 			(cond 
-				 [(< x y) (member? x (node->left node))] 
+				 [(lower x y) (member? x (node->left node))] 
 				 [(eq? x y) #t] 
 				 [else (member? x (node->right node))]))]
 	 [else #f]))
+
+(define (lower a b)
+	(cond
+		[(and (number? a) (number? b)) (< a b)]
+		[(and (string? a) (string? b)) (string<? a b)]))
+
+(define (lowereq a b)
+	(cond
+		[(and (number? a) (number? b)) (<= a b)]
+		[((and (string? a) (string? b)) (string<=? a b))]))
+
 
 (define (tree-count x node)
 	(cond 
 	 [(node? node) 
 		(let ([y (node->value node)])
 			(cond 
-				 [(< x y) (tree-count x (node->left node))] 
+				 [(lower x y) (tree-count x (node->left node))] 
 				 [(eq? x y) (node->count node)] 
 				 [else (tree-count x (node->right node))]))]
 	 [else #f]))
@@ -222,20 +233,20 @@
 	(cond
 	 [(not (node? node))
 		 (node-constructor 'red #f x #f 1)]
-	 [(< x (node->value node)) 
+	 [(lower x (node->value node)) 
 		 (balance (node-constructor 
 								(node->color node) 
 								(inner-insert x (node->left node)) 
 								(node->value node) 
 								(node->right node)
 								(node->count node)))]
-	 [(= x (node->value node))
+	 [(eq? x (node->value node))
 		 (node-constructor (node->color node) 
 								(node->left node) 
 								(node->value node) 
 								(node->right node)
 								(+ (node->count node) 1))]
-	 [(> x (node->value node))
+	 [(lower (node->value node) x)
 		 (balance (node-constructor 
 								(node->color node) 
 								(node->left node) 
@@ -251,13 +262,13 @@
 		(let ([y (node->value node)])
 			(cond
 				[(eq? y #f) #f]
-				[(< x y)
+				[(lower x y)
 					(delL x node)]
-				[(> x y)
+				[(lower y x)
 					(delR x node)]
 				[else
 					(cond 
-						[(> (node->count node) 1)
+						[(lower 1 (node->count node))
 							(node-constructor 
 								(node->color node)
 								(node->left node)

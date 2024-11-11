@@ -3,7 +3,7 @@
 (define (append-string str n)
   (cond
     ((= n 1) str)
-    (else (if (<= n 0)
+    (else (if (lowereq n 0)
               ""
               (string-append
                (string-append str "  ")
@@ -32,7 +32,7 @@
 
 (define (append-rbmset-many value rbmset amount)
   (cond
-    ((or (eq? value #f) (< amount 1)) rbmset)
+    ((or (eq? value #f) (lower amount 1)) rbmset)
     (else (append-rbmset-many value (insert value rbmset) (- amount 1)))))
 
 (define (rbmset-fill rmbset lst)
@@ -100,7 +100,7 @@
   (sub-filter-rbmset #f rbmset pred?))
 
 (define (cons-n-times element lst n)
-  (if (<= n 0) lst (cons element (cons-n-times element lst (- n 1)))))
+  (if (lowereq n 0) lst (cons element (cons-n-times element lst (- n 1)))))
 
 (define (rbmset->list rbmset)
   (define (sub-rbmset->list rbmset newlist)
