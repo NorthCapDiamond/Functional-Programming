@@ -145,10 +145,13 @@
 ```Scheme
 (define (union-rbmset rbmset1 rbmset2)
   (cond
-    ((and (eq? rbmset1 #f) (eq? rbmset2 #f)) #f)
-    ((and (not (eq? rbmset1 #f)) (eq? rbmset2 #f)) rbmset1)
-    ((and (eq? rbmset1 #f) (not (eq? rbmset2 #f))) rbmset2)
-    (else (fuse rbmset1 rbmset2))))
+    ((list? rbmset1) (rbmset-fill rbmset2 rbmset1))
+    ((list? rbmset2) (rbmset-fill rbmset1 rbmset2))
+    ((eq? rbmset1 #f) rbmset2)
+    ((eq? rbmset2 #f) rbmset1)
+    (else (rbmset-fill
+           (rbmset-fill #f (rbmset->list rbmset1))
+           (rbmset->list rbmset2)))))
 ```
 
 ### Фильтрация мультимножеств

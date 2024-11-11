@@ -35,8 +35,14 @@ jobs:
       - name: Setup project
         run: cd Lab2 && make format
 
-      - name: All Tests
-        run: cd Lab2 && make
+      - name: RB-Tree Unit tests
+        run: cd Lab2 && make rb-tree-unit
+
+      - name: RB-Bag Unit tests
+        run: cd Lab2 && make rb-bag-unit
+
+      - name: RB-Bag Property tests
+        run: cd Lab2 && make rb-bag-property
 
           
   
