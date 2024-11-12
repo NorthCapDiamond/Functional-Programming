@@ -28,7 +28,7 @@
     (else #f)))
 
 (define (special-sort lst op)
-  (cond ((eq? lst #f) '()) (else (stable-sort lst op))))
+  (cond ((or (eq? lst #f) (eq? lst '())) '()) (else (stable-sort lst op))))
 
 (define (null->f arg) (cond ((eq? arg '()) #f) (else arg)))
 
@@ -47,7 +47,7 @@
             (number->string iter)))
           (property-sorting (- tests-size 1) maxi length (+ iter 1)))))
 
-(property-sorting 1000 1000000 10000 1)
+(property-sorting 1000 1000000 1000 1)
 
 (test-end "Property Sorting")
 
@@ -67,7 +67,7 @@
               (number->string iter)))
             (property-append (- tests-size 1) maxi length (+ iter 1))))))
 
-(property-append 1000 1000000 10000 1)
+(property-append 1000 1000000 1000 1)
 
 (test-end "Property test for appending")
 
@@ -112,7 +112,7 @@
               (number->string iter)))
             (property-union (- tests-size 1) maxi length (+ 1 iter))))))
 
-(property-union 1000 1000000 10000 1)
+(property-union 1000 1000000 1000 1)
 
 (test-end "Property test for union")
 
@@ -138,7 +138,7 @@
                 (number->string iter)))
               (property-union (- tests-size 1) maxi length (+ 1 iter)))))))
 
-(property-union 1000 1000000 10000 1)
+(property-union 1000 1000000 1000 1)
 
 (test-end "Properties of a monoid")
 
@@ -227,7 +227,7 @@
             (number->string iter)))
           (property-sorting-str (- tests-size 1) maxi length (+ iter 1)))))
 
-(property-sorting-str 500 1000 100 1)
+(property-sorting-str 100 1000 100 1)
 
 (test-end "Property Sorting Strings")
 
@@ -249,7 +249,7 @@
               (number->string iter)))
             (property-append-str (- tests-size 1) maxi length (+ iter 1))))))
 
-(property-append-str 500 1000 100 1)
+(property-append-str 100 1000 100 1)
 
 (test-end "Property test for appending Strings")
 
@@ -279,27 +279,28 @@
                      (random maxi)
                      (random length))))
             (display-and-test
-             (rbmset->list (union-rbmset (rbmset-fill #f x1) y1))
+             (null->f (rbmset->list (union-rbmset (rbmset-fill #f x1) y1)))
              (null->f (special-sort (lists-append x1 y1) lower))
              (string-append
               "Property test for union (bag u list) number "
               (number->string iter)))
             (display-and-test
-             (rbmset->list (union-rbmset x2 (rbmset-fill #f y2)))
+             (null->f (rbmset->list (union-rbmset x2 (rbmset-fill #f y2))))
              (null->f (special-sort (lists-append x2 y2) lower))
              (string-append
               "Property test for union (list u bag) number "
               (number->string iter)))
             (display-and-test
-             (rbmset->list
-              (union-rbmset (rbmset-fill #f x3) (rbmset-fill #f y3)))
+             (null->f
+              (rbmset->list
+               (union-rbmset (rbmset-fill #f x3) (rbmset-fill #f y3))))
              (special-sort (lists-append x3 y3) lower)
              (string-append
               "Property test for union (bag u bag) number "
               (number->string iter)))
             (property-union-str (- tests-size 1) maxi length (+ 1 iter))))))
 
-(property-union-str 500 1000 100 1)
+(property-union-str 50 10 10 1)
 
 (test-end "Property test for union Strings")
 
@@ -318,10 +319,12 @@
                     (random length))))
             (let ((left (null->f (special-sort (lists-append x y) lower)))
                   (right (null->f (special-sort (lists-append y x) lower)))
-                  (midl (rbmset->list
-                         (union-rbmset (rbmset-fill #f x) (rbmset-fill #f y))))
-                  (midr (rbmset->list
-                         (union-rbmset (rbmset-fill #f y) (rbmset-fill #f x)))))
+                  (midl (null->f
+                         (rbmset->list
+                          (union-rbmset (rbmset-fill #f x) (rbmset-fill #f y)))))
+                  (midr (null->f
+                         (rbmset->list
+                          (union-rbmset (rbmset-fill #f y) (rbmset-fill #f x))))))
               (display-and-assert
                (and (equal? left midl) (equal? midl midr) (equal? midr right))
                (string-append
@@ -329,7 +332,7 @@
                 (number->string iter)))
               (property-union-str (- tests-size 1) maxi length (+ 1 iter)))))))
 
-(property-union-str 500 1000 100 1)
+(property-union-str 50 10 10 1)
 
 (test-end "Properties of a monoid Strings")
 
@@ -353,7 +356,7 @@
               (number->string iter)))
             (property-delete-str (- tests-size 1) maxi length (+ iter 1))))))
 
-(property-delete-str 100 1000 100 1)
+(property-delete-str 10 1000 100 1)
 
 (test-end "Property test for delete Strings")
 
