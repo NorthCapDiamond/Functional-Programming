@@ -126,7 +126,7 @@
 
 (define (delete-and-compare rbmset lst delete-list)
 	(cond
-		[(null? delete-list) (equal? (rbmset->list rbmset) (special-sort lst lower))]
+		[(or (null? delete-list) (eq? delete-list #f)) (equal? (rbmset->list rbmset) (special-sort lst lower))]
 		[else
 				(let ([x (car delete-list)])
 					(delete-and-compare (remove-rbmset x rbmset) (remove-once lst x) (cdr delete-list)))]))
