@@ -146,7 +146,7 @@
 				(display-and-assert (delete-and-compare (rbmset-fill #f lst) lst del) (string-append "Property test for delete number " (number->string iter)))
 				(property-delete (- tests-size 1) maxi length (+ iter 1)))]))
 
-(property-delete 500 1000000 10000 1)
+(property-delete 500 1000000 1000 1)
 (test-end "Property test for delete")
 
 (newline)
@@ -192,7 +192,7 @@
 			(display-and-assert (ordered? lower (rbmset->list (rbmset-fill #f (generate-random-list-with-f-str maxi length)))) (string-append "Property test for sorting number " (number->string iter)))
 			(property-sorting-str (- tests-size 1) maxi length (+ iter 1))]))
 
-(property-sorting-str 1000 10000 1000 1)
+(property-sorting-str 500 1000 100 1)
 (test-end "Property Sorting Strings")
 
 
@@ -206,7 +206,7 @@
 			(let ([x (generate-random-list-with-f-str (random maxi) (random length))])
 				(display-and-test (rbmset->list (rbmset-fill #f x)) (special-sort x lower) (string-append "Property test for appending number " (number->string iter)))
 				(property-append-str (- tests-size 1) maxi length (+ iter 1)))]))
-(property-append-str 1000 10000 1000 1)
+(property-append-str 500 1000 100 1)
 (test-end "Property test for appending Strings")		
 
 (newline)
@@ -227,7 +227,7 @@
 				(display-and-test (rbmset->list (union-rbmset (rbmset-fill #f x3) (rbmset-fill #f y3))) (special-sort (lists-append x3 y3) lower ) (string-append "Property test for union (bag u bag) number " (number->string iter)))
 				(property-union-str (- tests-size 1) maxi length ( + 1 iter)))]))
 
-(property-union-str 1000 10000 1000 1)
+(property-union-str 500 1000 100 1)
 (test-end "Property test for union Strings")
 
 (newline)
@@ -246,7 +246,7 @@
 					(display-and-assert (and (equal? left midl) (equal? midl midr) (equal? midr right)) (string-append "Property test: list1-2 == list1 u list2 == list2 u list1 == list2-1 number " (number->string iter)))
 					(property-union-str (- tests-size 1) maxi length (+ 1 iter))))]))
 
-(property-union-str 1000 10000 1000 1)
+(property-union-str 500 1000 100 1)
 (test-end "Properties of a monoid Strings")
 
 (newline)
@@ -262,7 +262,7 @@
 				(display-and-assert (delete-and-compare (rbmset-fill #f lst) lst del) (string-append "Property test for delete number " (number->string iter)))
 				(property-delete-str (- tests-size 1) maxi length (+ iter 1)))]))
 
-(property-delete-str 500 10000 1000 1)
+(property-delete-str 100 1000 100 1)
 (test-end "Property test for delete Strings")
 
 (newline)

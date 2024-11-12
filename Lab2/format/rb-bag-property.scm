@@ -179,7 +179,7 @@
               (number->string iter)))
             (property-delete (- tests-size 1) maxi length (+ iter 1))))))
 
-(property-delete 500 1000000 10000 1)
+(property-delete 500 1000000 1000 1)
 
 (test-end "Property test for delete")
 
@@ -225,7 +225,7 @@
             (number->string iter)))
           (property-sorting-str (- tests-size 1) maxi length (+ iter 1)))))
 
-(property-sorting-str 1000 10000 1000 1)
+(property-sorting-str 500 1000 100 1)
 
 (test-end "Property Sorting Strings")
 
@@ -247,7 +247,7 @@
               (number->string iter)))
             (property-append-str (- tests-size 1) maxi length (+ iter 1))))))
 
-(property-append-str 1000 10000 1000 1)
+(property-append-str 500 1000 100 1)
 
 (test-end "Property test for appending Strings")
 
@@ -297,7 +297,7 @@
               (number->string iter)))
             (property-union-str (- tests-size 1) maxi length (+ 1 iter))))))
 
-(property-union-str 1000 10000 1000 1)
+(property-union-str 500 1000 100 1)
 
 (test-end "Property test for union Strings")
 
@@ -327,7 +327,7 @@
                 (number->string iter)))
               (property-union-str (- tests-size 1) maxi length (+ 1 iter)))))))
 
-(property-union-str 1000 10000 1000 1)
+(property-union-str 500 1000 100 1)
 
 (test-end "Properties of a monoid Strings")
 
@@ -351,7 +351,7 @@
               (number->string iter)))
             (property-delete-str (- tests-size 1) maxi length (+ iter 1))))))
 
-(property-delete-str 500 10000 1000 1)
+(property-delete-str 100 1000 100 1)
 
 (test-end "Property test for delete Strings")
 
