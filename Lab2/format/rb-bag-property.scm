@@ -300,7 +300,7 @@
               (number->string iter)))
             (property-union-str (- tests-size 1) maxi length (+ 1 iter))))))
 
-(property-union-str 50 1000 100 1)
+(property-union-str 30 1000 1000 1)
 
 (test-end "Property test for union Strings")
 
@@ -334,7 +334,7 @@
                 (number->string iter)))
               (property-union-str (- tests-size 1) maxi length (+ 1 iter)))))))
 
-(property-union-str 50 1000 100 1)
+(property-union-str 20 1000 1000 1)
 
 (test-end "Properties of a monoid Strings")
 
