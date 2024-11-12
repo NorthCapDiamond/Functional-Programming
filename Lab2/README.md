@@ -64,7 +64,7 @@
   (define (inner-insert x node)
     (cond
       ((not (node? node)) (node-constructor 'red #f x #f 1))
-      ((< x (node->value node))
+      ((lower x (node->value node))
        (balance
         (node-constructor
          (node->color node)
@@ -72,14 +72,14 @@
          (node->value node)
          (node->right node)
          (node->count node))))
-      ((= x (node->value node))
+      ((eq? x (node->value node))
        (node-constructor
         (node->color node)
         (node->left node)
         (node->value node)
         (node->right node)
         (+ (node->count node) 1)))
-      ((> x (node->value node))
+      ((lower (node->value node) x)
        (balance
         (node-constructor
          (node->color node)
@@ -98,10 +98,10 @@
     (let ((y (node->value node)))
       (cond
         ((eq? y #f) #f)
-        ((< x y) (delL x node))
-        ((> x y) (delR x node))
+        ((lower x y) (delL x node))
+        ((lower y x) (delR x node))
         (else (cond
-                ((> (node->count node) 1)
+                ((lower 1 (node->count node))
                  (node-constructor
                   (node->color node)
                   (node->left node)
@@ -129,8 +129,17 @@
 
 (define (append-rbmset-many value rbmset amount)
   (cond
-    ((or (eq? value #f) (< amount 1)) rbmset)
+    ((or (eq? value #f) (lower amount 1)) rbmset)
     (else (append-rbmset-many value (insert value rbmset) (- amount 1)))))
+
+(define (rbmset-fill rmbset lst)
+  (define (sub-walk rbmset lst)
+    (cond
+      ((null? lst) rbmset)
+      (else (let ((x (car lst)))
+              (list? x)
+              (sub-walk (append-rbmset x rbmset) (cdr lst))))))
+  (cond ((eq? lst #f) rmbset) (else (sub-walk rmbset lst))))
 ```
 
 ### Удаление элемента из мультимножества
