@@ -41,6 +41,11 @@
 		[(eq? lst #f) '()]
 		[else (stable-sort lst op)]))
 
+(define (null->f arg)
+	(cond
+		[(eq? arg '()) #f]
+		[else arg]))
+
 
 (test-begin "Property Sorting")
 (define (property-sorting tests-size maxi length iter)
@@ -87,8 +92,8 @@
 						[y2 (generate-random-list-with-f (random maxi) (random length))]
 						[x3 (generate-random-list-with-f (random maxi) (random length))]
 						[y3 (generate-random-list-with-f (random maxi) (random length))])
-				(display-and-test (rbmset->list (union-rbmset (rbmset-fill #f x1) y1)) (special-sort (lists-append x1 y1) <= ) (string-append "Property test for union (bag u list) number " (number->string iter)))
-				(display-and-test (rbmset->list (union-rbmset x2 (rbmset-fill #f y2))) (special-sort (lists-append x2 y2) <= ) (string-append "Property test for union (list u bag) number " (number->string iter)))
+				(display-and-test (rbmset->list (union-rbmset (rbmset-fill #f x1) y1)) ( null->f (special-sort (lists-append x1 y1) <= )) (string-append "Property test for union (bag u list) number " (number->string iter)))
+				(display-and-test (rbmset->list (union-rbmset x2 (rbmset-fill #f y2))) ( null->f (special-sort (lists-append x2 y2) <= )) (string-append "Property test for union (list u bag) number " (number->string iter)))
 				(display-and-test (rbmset->list (union-rbmset (rbmset-fill #f x3) (rbmset-fill #f y3))) (special-sort (lists-append x3 y3) <= ) (string-append "Property test for union (bag u bag) number " (number->string iter)))
 				(property-union (- tests-size 1) maxi length ( + 1 iter)))]))
 
@@ -104,8 +109,8 @@
 		[else
 			(let ([x (generate-random-list-with-f (random maxi) (random length))]
 						[y (generate-random-list-with-f (random maxi) (random length))])
-				(let ([left (special-sort (lists-append x y) <= )]
-							[right (special-sort (lists-append y x) <= )]
+				(let ([left ( null->f (special-sort (lists-append x y) <= ))]
+							[right ( null->f (special-sort (lists-append y x) <= ))]
 							[midl (rbmset->list (union-rbmset (rbmset-fill #f x) (rbmset-fill #f y)))]
 							[midr (rbmset->list (union-rbmset (rbmset-fill #f y) (rbmset-fill #f x)))])
 					(display-and-assert (and (equal? left midl) (equal? midl midr) (equal? midr right)) (string-append "Property test: list1-2 == list1 u list2 == list2 u list1 == list2-1 number " (number->string iter)))
@@ -222,8 +227,8 @@
 						[y2 (generate-random-list-with-f-str (random maxi) (random length))]
 						[x3 (generate-random-list-with-f-str (random maxi) (random length))]
 						[y3 (generate-random-list-with-f-str (random maxi) (random length))])
-				(display-and-test (rbmset->list (union-rbmset (rbmset-fill #f x1) y1)) (special-sort (lists-append x1 y1) lower) (string-append "Property test for union (bag u list) number " (number->string iter)))
-				(display-and-test (rbmset->list (union-rbmset x2 (rbmset-fill #f y2))) (special-sort (lists-append x2 y2) lower ) (string-append "Property test for union (list u bag) number " (number->string iter)))
+				(display-and-test (rbmset->list (union-rbmset (rbmset-fill #f x1) y1)) ( null->f (special-sort (lists-append x1 y1) lower)) (string-append "Property test for union (bag u list) number " (number->string iter)))
+				(display-and-test (rbmset->list (union-rbmset x2 (rbmset-fill #f y2))) ( null->f (special-sort (lists-append x2 y2) lower )) (string-append "Property test for union (list u bag) number " (number->string iter)))
 				(display-and-test (rbmset->list (union-rbmset (rbmset-fill #f x3) (rbmset-fill #f y3))) (special-sort (lists-append x3 y3) lower ) (string-append "Property test for union (bag u bag) number " (number->string iter)))
 				(property-union-str (- tests-size 1) maxi length ( + 1 iter)))]))
 
@@ -239,8 +244,8 @@
 		[else
 			(let ([x (generate-random-list-with-f-str (random maxi) (random length))]
 						[y (generate-random-list-with-f-str (random maxi) (random length))])
-				(let ([left (special-sort (lists-append x y) lower )]
-							[right (special-sort (lists-append y x) lower )]
+				(let ([left (null->f (special-sort (lists-append x y) lower ))]
+							[right (null->f (special-sort (lists-append y x) lower ))]
 							[midl (rbmset->list (union-rbmset (rbmset-fill #f x) (rbmset-fill #f y)))]
 							[midr (rbmset->list (union-rbmset (rbmset-fill #f y) (rbmset-fill #f x)))])
 					(display-and-assert (and (equal? left midl) (equal? midl midr) (equal? midr right)) (string-append "Property test: list1-2 == list1 u list2 == list2 u list1 == list2-1 number " (number->string iter)))

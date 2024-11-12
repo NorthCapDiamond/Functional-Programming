@@ -30,6 +30,8 @@
 (define (special-sort lst op)
   (cond ((eq? lst #f) '()) (else (stable-sort lst op))))
 
+(define (null->f arg) (cond ((eq? arg '()) #f) (else arg)))
+
 (test-begin "Property Sorting")
 
 (define (property-sorting tests-size maxi length iter)
@@ -91,13 +93,13 @@
                 (y3 (generate-random-list-with-f (random maxi) (random length))))
             (display-and-test
              (rbmset->list (union-rbmset (rbmset-fill #f x1) y1))
-             (special-sort (lists-append x1 y1) <=)
+             (null->f (special-sort (lists-append x1 y1) <=))
              (string-append
               "Property test for union (bag u list) number "
               (number->string iter)))
             (display-and-test
              (rbmset->list (union-rbmset x2 (rbmset-fill #f y2)))
-             (special-sort (lists-append x2 y2) <=)
+             (null->f (special-sort (lists-append x2 y2) <=))
              (string-append
               "Property test for union (list u bag) number "
               (number->string iter)))
@@ -123,8 +125,8 @@
     ((<= tests-size 0) (display "All properties of a monoid finished\n"))
     (else (let ((x (generate-random-list-with-f (random maxi) (random length)))
                 (y (generate-random-list-with-f (random maxi) (random length))))
-            (let ((left (special-sort (lists-append x y) <=))
-                  (right (special-sort (lists-append y x) <=))
+            (let ((left (null->f (special-sort (lists-append x y) <=)))
+                  (right (null->f (special-sort (lists-append y x) <=)))
                   (midl (rbmset->list
                          (union-rbmset (rbmset-fill #f x) (rbmset-fill #f y))))
                   (midr (rbmset->list
@@ -278,13 +280,13 @@
                      (random length))))
             (display-and-test
              (rbmset->list (union-rbmset (rbmset-fill #f x1) y1))
-             (special-sort (lists-append x1 y1) lower)
+             (null->f (special-sort (lists-append x1 y1) lower))
              (string-append
               "Property test for union (bag u list) number "
               (number->string iter)))
             (display-and-test
              (rbmset->list (union-rbmset x2 (rbmset-fill #f y2)))
-             (special-sort (lists-append x2 y2) lower)
+             (null->f (special-sort (lists-append x2 y2) lower))
              (string-append
               "Property test for union (list u bag) number "
               (number->string iter)))
@@ -314,8 +316,8 @@
                 (y (generate-random-list-with-f-str
                     (random maxi)
                     (random length))))
-            (let ((left (special-sort (lists-append x y) lower))
-                  (right (special-sort (lists-append y x) lower))
+            (let ((left (null->f (special-sort (lists-append x y) lower)))
+                  (right (null->f (special-sort (lists-append y x) lower)))
                   (midl (rbmset->list
                          (union-rbmset (rbmset-fill #f x) (rbmset-fill #f y))))
                   (midr (rbmset->list
@@ -356,6 +358,7 @@
 (test-end "Property test for delete Strings")
 
 (newline)
+
 
 
 
