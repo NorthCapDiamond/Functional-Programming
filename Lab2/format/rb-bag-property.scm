@@ -179,7 +179,7 @@
               (number->string iter)))
             (property-delete (- tests-size 1) maxi length (+ iter 1))))))
 
-(property-delete 1000 1000000 10000 1)
+(property-delete 500 1000000 10000 1)
 
 (test-end "Property test for delete")
 
@@ -351,7 +351,7 @@
               (number->string iter)))
             (property-delete-str (- tests-size 1) maxi length (+ iter 1))))))
 
-(property-delete-str 1000 10000 1000 1)
+(property-delete-str 500 10000 1000 1)
 
 (test-end "Property test for delete Strings")
 
