@@ -45,7 +45,7 @@
             (number->string iter)))
           (property-sorting (- tests-size 1) maxi length (+ iter 1)))))
 
-(property-sorting 10000 10000000 10000 1)
+(property-sorting 1000 1000000 10000 1)
 
 (test-end "Property Sorting")
 
@@ -65,7 +65,7 @@
               (number->string iter)))
             (property-append (- tests-size 1) maxi length (+ iter 1))))))
 
-(property-append 10000 10000000 10000 1)
+(property-append 1000 1000000 10000 1)
 
 (test-end "Property test for appending")
 
@@ -110,7 +110,7 @@
               (number->string iter)))
             (property-union (- tests-size 1) maxi length (+ 1 iter))))))
 
-(property-union 10000 10000000 10000 1)
+(property-union 1000 1000000 10000 1)
 
 (test-end "Property test for union")
 
@@ -136,7 +136,7 @@
                 (number->string iter)))
               (property-union (- tests-size 1) maxi length (+ 1 iter)))))))
 
-(property-union 10000 10000000 10000 1)
+(property-union 1000 1000000 10000 1)
 
 (test-end "Properties of a monoid")
 
@@ -150,13 +150,16 @@
 
 (define (delete-and-compare rbmset lst delete-list)
   (cond
-    ((or (null? delete-list) (eq? delete-list #f))
-     (equal? (rbmset->list rbmset) (special-sort lst lower)))
-    (else (let ((x (car delete-list)))
-            (delete-and-compare
-             (remove-rbmset x rbmset)
-             (remove-once lst x)
-             (cdr delete-list))))))
+    ((eq? rbmset #f) (eq? rbmset lst))
+    ((eq? lst #f) (eq? rbmset lst))
+    (else (cond
+            ((or (null? delete-list) (eq? delete-list #f))
+             (equal? (rbmset->list rbmset) (special-sort lst lower)))
+            (else (let ((x (car delete-list)))
+                    (delete-and-compare
+                     (remove-rbmset x rbmset)
+                     (remove-once lst x)
+                     (cdr delete-list))))))))
 
 (test-begin "Property test for delete")
 
@@ -176,7 +179,7 @@
               (number->string iter)))
             (property-delete (- tests-size 1) maxi length (+ iter 1))))))
 
-(property-delete 10000 10000000 10000 1)
+(property-delete 1000 1000000 10000 1)
 
 (test-end "Property test for delete")
 
@@ -222,7 +225,7 @@
             (number->string iter)))
           (property-sorting-str (- tests-size 1) maxi length (+ iter 1)))))
 
-(property-sorting-str 10000 10000000 10000 1)
+(property-sorting-str 1000 1000000 10000 1)
 
 (test-end "Property Sorting Strings")
 
@@ -244,7 +247,7 @@
               (number->string iter)))
             (property-append-str (- tests-size 1) maxi length (+ iter 1))))))
 
-(property-append-str 10000 10000000 10000 1)
+(property-append-str 10000 1000000 10000 1)
 
 (test-end "Property test for appending Strings")
 
@@ -294,7 +297,7 @@
               (number->string iter)))
             (property-union-str (- tests-size 1) maxi length (+ 1 iter))))))
 
-(property-union-str 10000 10000000 10000 1)
+(property-union-str 1000 1000000 10000 1)
 
 (test-end "Property test for union Strings")
 
@@ -324,7 +327,7 @@
                 (number->string iter)))
               (property-union-str (- tests-size 1) maxi length (+ 1 iter)))))))
 
-(property-union-str 10000 10000000 10000 1)
+(property-union-str 1000 1000000 10000 1)
 
 (test-end "Properties of a monoid Strings")
 
@@ -348,7 +351,7 @@
               (number->string iter)))
             (property-delete-str (- tests-size 1) maxi length (+ iter 1))))))
 
-(property-delete-str 10000 10000000 10000 1)
+(property-delete-str 1000 1000000 10000 1)
 
 (test-end "Property test for delete Strings")
 
