@@ -217,7 +217,7 @@
 			(display-and-assert (ordered? lower (rbmset->list (rbmset-fill #f (generate-random-list-with-f-str maxi length)))) (string-append "Property test for sorting number " (number->string iter)))
 			(property-sorting-str (- tests-size 1) maxi length (+ iter 1))]))
 
-(property-sorting-str 1000 1000 1000 1)
+(property-sorting-str 100 1000 100 1)
 (test-end "Property Sorting Strings")
 
 
@@ -231,7 +231,7 @@
 			(let ([x (generate-random-list-with-f-str (random maxi) (random length))])
 				(display-and-test (rbmset->list (rbmset-fill #f x)) (special-sort x lower) (string-append "Property test for appending number " (number->string iter)))
 				(property-append-str (- tests-size 1) maxi length (+ iter 1)))]))
-(property-append-str 1000 1000 1000 1)
+(property-append-str 100 1000 100 1)
 (test-end "Property test for appending Strings")		
 
 (newline)

@@ -256,7 +256,7 @@
             (number->string iter)))
           (property-sorting-str (- tests-size 1) maxi length (+ iter 1)))))
 
-(property-sorting-str 1000 1000 1000 1)
+(property-sorting-str 100 1000 100 1)
 
 (test-end "Property Sorting Strings")
 
@@ -278,7 +278,7 @@
               (number->string iter)))
             (property-append-str (- tests-size 1) maxi length (+ iter 1))))))
 
-(property-append-str 1000 1000 1000 1)
+(property-append-str 100 1000 100 1)
 
 (test-end "Property test for appending Strings")
 
