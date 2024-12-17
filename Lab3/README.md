@@ -76,7 +76,7 @@
 
 ### Интерполяция (Лагранж):
 
-```
+```Scheme
 (define (lagrange-function x L)
   (define (inner-loop x L n i j l_i)
     (cond [(eq? n j) l_i]
