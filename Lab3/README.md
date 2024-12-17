@@ -244,6 +244,64 @@ parse-func test 3
 # of expected passes      3
 ```
 
+### Демонстрация работы
+
+#### Формат
+
+```
+Usage: guile runner.scm [mode][func][step]
+Where:
+  mode: 0 - cmd or filelink
+  func: 1 - linear 2 - lagrange 3 - both
+  step is number
+```
+
+#### Чтение из файла
+
+```
+guile no-format/runner.scm data.csv 2 1
+Lagrange : ((1 1) (2 4) (3 9) (4 16) (5 25) (6 36))
+Lagrange : ((2 4) (3 9) (4 16) (5 25) (6 36) (7 49))
+Lagrange : ((3 9) (4 16) (5 25) (6 36) (7 49) (8 64))
+Lagrange : ((4 16) (5 25) (6 36) (7 49) (8 64) (9 81))
+Lagrange : ((5 25) (6 36) (7 49) (8 64) (9 81) (10 100))
+```
+
+#### Потоковый режим
+
+```
+guile no-format/runner.scm 0 3 1
+Enter x and y:
+0
+0
+Enter x and y:
+1
+1
+Linear : ((0 . 0) (1 . 1))
+Enter x and y:
+2
+2
+Linear : ((1 . 1) (2 . 2))
+Enter x and y:
+3
+3
+Linear : ((2 . 2) (3 . 3))
+Enter x and y:
+4
+4
+Linear : ((3 . 3) (4 . 4))
+Enter x and y:
+5
+5
+Linear : ((4 . 4) (5 . 5))
+Lagrange : ((0 0) (1 1) (2 2) (3 3) (4 4) (5 5))
+Enter x and y:
+6
+6
+Linear : ((5 . 5) (6 . 6))
+Lagrange : ((1 1) (2 2) (3 3) (4 4) (5 5) (6 6))
+```
+
 ### Заключение 
 
 Лабораторная работа получилась достаточно простой (если сравнивать с ЛР 2), так как основывается на работе прошлого курса. При написании программы возникли трудности с реализацией смещения элементов в списке, но я смог найти простое и аккуратное решение.
