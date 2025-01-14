@@ -1,5 +1,5 @@
 (include "tester.scm")
-(include "../Functional-Programming/Lab2/no-format/rb-bag.scm")
+(include "../../Lab2/no-format/rb-bag.scm")
 
 ; Default generator No Shrinking
 (define (sum-property a b)
