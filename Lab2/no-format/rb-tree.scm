@@ -98,7 +98,7 @@
 (define (lowereq a b)
 	(cond
 		[(and (number? a) (number? b)) (<= a b)]
-		[((and (string? a) (string? b)) (string<=? a b))]))
+		[(and (string? a) (string? b)) (string<=? a b)]))
 
 
 (define (tree-count x node)
