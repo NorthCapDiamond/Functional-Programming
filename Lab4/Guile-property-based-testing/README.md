@@ -573,10 +573,6 @@ Result: Passed 0 Out of 100
 Result: Passed 100 Out of 100
 ```
 
-#### using default-shrinker
-
-
-
 #### using custom-generator and default-shrinker/no-shrinking comparasion
 
 ```Scheme
