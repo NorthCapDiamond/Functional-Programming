@@ -1,5 +1,4 @@
 (include "tester.scm")
-(include "../Functional-Programming/Lab2/no-format/rb-bag.scm")
 
 ; sum property
 ; Success. Default generator. No Shrinking
