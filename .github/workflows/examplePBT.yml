@@ -33,7 +33,7 @@ jobs:
           rm tmp.scm
         
       - name: Setup project
-        run: cd Lab4/Guile-property-based-testing && guile use-tester.scm
+        run: cd Lab4/Guile-property-based-testing && guile usage.scm
 
           
   
