@@ -1,220 +1,213 @@
-(include "generator.scm")
+(include "generators.scm")
 
 (use-modules (srfi srfi-9)
-			 (srfi srfi-1)
+			       (srfi srfi-1)
              (srfi srfi-13))
 
-(define-record-type <answer>
-	(make-answer result logging failed status user-property args-amount generator generator-args)
-	answer?
-	(result answer-result)
-	(logging answer-logging)
-	(failed answer-failed)
-	(status answer-status)
-	(user-property answer-user-property)
-	(args-amount answer-args-amount)
-	(generator answer-generator)
-	(generator-args answer-generator-args))
+(define-record-type <response>
+	(make-response property generator result logs failed passed status)
+	response?
+	(property get-response-property)
+	(generator get-response-generator)
+	(result get-response-result)
+	(logs get-response-logs)
+	(failed get-response-failed)
+	(passed get-response-passed)
+	(status get-response-status))
 
-(define (default-shrinker-args limit shift params-to-change)
-	(list limit shift params-to-change))
-
-(define* (print-property-test-stats ans #:optional (res #t) (logg #f) (fail #f) (isok #f))
-  (cond 
-  	[(answer? ans) 
-  	(cond [(or res logg fail) (display "---Answer Record---\n")])
-  	(cond [(eq? res #t)
-        (display "Result: ")
-        (display (answer-result ans))
-        (newline)])
-  	(cond
-        [(eq? logg #t)
-        (display "Logging:\n")
-        (display (answer-logging ans))
-        (newline)])
-  	(cond
-        [(eq? fail #t)
-        (display "Failed:\n")
-        (display (answer-failed ans))
-        (newline)])
-  	(cond
-  		[(eq? isok #t)
-  		(display "Is passed:\n")
-        (display (answer-status ans))
-        (newline)])]
-  	[else (display "Invalid answer record.")]))
-
-(define (toString obj)
+(define (to-string obj)
   (cond
     [(string? obj) (string-append obj " ")]
     [(number? obj) (string-append (number->string obj) " ")]
     [(list? obj) (string-append (apply string-append
-                          (map toString obj)) " ")]
+                          (map to-string obj)) " ")]
     [else (format #f "~a" obj)]))
 
-(define (test-template user-property args-amount generator generator-args test-size)
-	(define (prepare-args generator generator-args args-amount)
-		(define (prepare-args-sub generator generator-args args-amount lst)
-			(cond
-				[(eqv? args-amount 0) lst]
-				[else
-					(prepare-args-sub 
-						generator 
-						generator-args 
-						(- args-amount 1) 
-						(append lst 
-							(list 
-								(apply 
-									generator 
-									generator-args))))]))
-		(prepare-args-sub generator generator-args args-amount '()))
-
-	(define* (iter-test user-property args-amount generator generator-args test-size my-answer passed #:optional (i 1))
+(define (shrink-number n)
 		(cond
-			[(eqv? test-size 0) (list my-answer passed)]
+			[(> n 0) (- n 1)]
+			[(< n 0) (+ n 1)]))
+
+
+	(define (shrink-list lst)
+	  (cond
+	    [(null? lst) (list '())]
+	    [(and (pair? lst) (null? (cdr lst))) (list '())]
+	    [else
+	      (let* ([first (car lst)]
+	             [rest (cdr lst)]
+	             [shrunk-rest (shrink-list rest)])
+	        (cons (cdr lst)
+	              (map (lambda (shrunk)
+	                     (cons first shrunk))
+	                   shrunk-rest)))]))
+
+	(define (shrink-string-to-list str)
+			(map list->string (shrink-list (string->list str))))
+
+
+(define* (response-to-string resp #:optional (full-log #f)(failed #f)(passed #f))
+	(display 
+		(string-append
+			"---Answer Record---\n"
+			(get-response-result resp)
+			"\n"
+			(cond
+				[(eq? full-log #t) (string-append "Logs:\n" (to-string (get-response-logs resp)) "\n")]
+				[else ""])
+			(cond
+				[(eq? failed #t) (string-append "Failed:\n" (to-string (get-response-failed resp)) "\n")]
+				[else ""])
+			(cond
+				[(eq? passed #t) (string-append "Passed:\n" (to-string (get-response-passed resp))"\n")]
+				[else ""])
+			"\n")))
+
+(define* (test property generator test-size #:optional (enable-shrinking #f) (shrinker shrink-number) (depth 10))
+	(define (test-iteration response property generator test-size enable-shrinking i)
+		(cond
+			[(eqv? test-size 0) 
+				(make-response
+					(get-response-property response)
+					(get-response-generator response)
+					(string-append "Passed " 
+						(number->string (length (get-response-passed response)))
+						" Out of "
+						(number->string ( + (length (get-response-passed response)) 
+							(length (get-response-failed response))))
+						"\n")
+					(get-response-logs response)
+					(get-response-failed response)
+					(get-response-passed response)
+					(cond
+						[(eqv? (length (get-response-passed response))
+							(+ (length (get-response-failed response)) 
+								(length(get-response-passed response)))) #t]
+						[else #f]))]
 			[else
-			(let ([func-args 
-				(prepare-args 
-					generator 
-					generator-args 
-					args-amount)])
-				(let ([ans (apply user-property func-args)])
-					(iter-test 
-						user-property
-						args-amount
-						generator
-						generator-args
-						(- test-size 1)
-						(make-answer
-							(answer-result my-answer)
-							(string-append
-								(answer-logging my-answer)
-								"Test number " 
-								(number->string i) 
-								" Finished with status " 
+				(let ([args (generator)])
+					(let ([run-tst (cond 
+														[(list? args) (apply property args)]
+														[else (property args)])])
+						(test-iteration
+							(make-response
+								(get-response-property response)
+								(get-response-generator response)
+								(get-response-result response)
+								(string-append 
+									(get-response-logs response)
+									"\nTest "
+									(number->string i)
+									" with data "
+									(to-string args)
+									" was "
+									(cond
+										[(eq? run-tst #t) "Passed\n"]
+										[else "Failed\n"]))
 								(cond
-									[(eq? ans #t) "OK"]
-									[else "FAIL"])
-								"| Test data:"
-								(toString func-args)
-								"\n")
+									[(eq? run-tst #f) (append (get-response-failed response) (list args))]
+									[else (get-response-failed response)])
 								(cond
-									[(eq? ans #t) (answer-failed my-answer)]
-									[else 
-										(string-append (answer-failed my-answer) (toString func-args) "\n")])
-								(answer-status my-answer)
-								(answer-user-property my-answer)
-								(answer-args-amount my-answer)
-								(answer-generator my-answer)
-								(answer-generator-args my-answer))
-						(cond
-							[(eq? ans #t) (+ 1 passed)]
-							[else passed])
-						(+ i 1))))]))
+									[(eq? run-tst #t) (append (get-response-passed response) (list args))]
+									[else (get-response-passed response)])
+								(get-response-status response))
+							property
+							generator
+							(- test-size 1)
+							enable-shrinking
+							(+ i 1))))]))
 
-	(define (test-loop user-property args-amount generator generator-args test-size my-answer)
-		(let ([after-test (iter-test
-								   user-property 
-								   args-amount 
-								   generator 
-								   generator-args 
-								   test-size 
-								   my-answer 
-								   0)])
-		(make-answer 
-			(string-append "Passed " 
-				(number->string (cadr after-test))
-				" Out of " 
-				(number->string test-size))
-			(answer-logging (car after-test))
-			(answer-failed (car after-test))
-			(cond
-				[(eqv? test-size (cadr after-test)) #t]
-				[else #f])
-			(answer-user-property my-answer)
-			(answer-args-amount my-answer)
-			(answer-generator my-answer)
-			(answer-generator-args my-answer))))
+	(define (get-last-element lst)
+	  (if (null? lst)
+	      (error "The list is empty.")
+	      (car (last lst))))
 
-	(test-loop user-property args-amount generator generator-args test-size (make-answer "" "" "" #f user-property args-amount generator generator-args)))
-
-
-(define (parse-args lst params-to-change shift)
-		(define (parse-args-sub lst params-to-change fnl-lst shift)
-			(cond
-				[(eqv? params-to-change 0) fnl-lst]
-				[else
+	(define (parse-answer ans resp)
+		(define (failed-passed lst ans)
+			(cond 
+				[(eq? (car lst)) ans]
+				[else 
+				(failed-passed 
+					(cdr lst)
 					(cond
-						[(> (car lst) shift) (parse-args-sub (cdr lst) (- params-to-change 1) (append fnl-lst (list (- (car lst) shift))) shift)]
-						[(< (car lst) 0) (parse-args-sub (cdr lst) (- params-to-change 1) (append fnl-lst (list (+ (car lst) shift))) shift)]
-						[else (parse-args-sub (cdr lst) (- params-to-change 1) (append fnl-lst (list (car lst))) shift)])]))
-		(parse-args-sub lst params-to-change '() shift))
+						[(eq? (get-last-element (car lst)) #t) (append (list-ref ans 0) (list (car lst)))]
+						[else (append (list-ref ans 1) (list (car lst)))]))]))
 
-(define (parse-args-iterative lst params-to-change shift)
-		(define (parse-args-iterative-sub lst params-to-change fnl-lst shift)
+		(let ([parsed (failed-passed ans (list '() '()))])
+			(make-response
+				(get-response-property resp)
+				(get-response-generator resp)
+				(get-response-result resp)
+				ans
+				(cadr parsed)
+				(car parsed)
+				(get-response-status resp))))
+
+	(define (run-shrink response property data depth shrinker answer)
+		(define (run-from-list prop lst ans)
 			(cond
-				[(eqv? params-to-change 0) fnl-lst]
+				[(null? lst) ans]
 				[else
-					(cond
-						[(and (<= (car lst) shift) (>= (car lst) 0)) (parse-args-iterative-sub (cdr lst) (- params-to-change 1) (append fnl-lst (list (car lst))) shift)]
-						[(> (car lst) shift) (parse-args-iterative-sub (cdr lst) (- params-to-change 1) (append fnl-lst (list (- (car lst) shift))) shift)]
-						[(< (car lst) 0) (parse-args-iterative-sub (cdr lst) (- params-to-change 1) (append fnl-lst (list (+ (car lst) shift))) shift)]
-						[else (parse-args-iterative-sub (cdr lst) (- params-to-change 1) (append fnl-lst (list (car lst))) shift)])]))
-		(parse-args-iterative-sub lst params-to-change '() shift))
+				(run-from-list prop (cdr lst) (append ans (list (car lst) (cond
 
+					[(list? (car lst)) (apply prop (car lst))]
+					[else (prop (car lst))]))))]))
 
-(define (default-shrinker answer limit params-to-change shift cycle)
-	; (display (parse-args 
-	; 				(answer-generator-args answer) 
-	; 				params-to-change
-	; 				shift))
+		(cond
+			[(eq? depth 0) answer]
+			[else
+			(let ([datashr (map shrinker data)])
+				(run-shrink 
+					response 
+					property 
+					datashr
+					(- depth 1) 
+					shrinker 
+					(append answer (run-from-list property datashr '()))))]))
+
+	(let([after-test (test-iteration 
+		(make-response 
+			property
+			(get-generator generator)
+			""
+			""
+			'()
+			'()
+			#f)
+
+		property
+		(get-generator generator)
+		test-size
+		enable-shrinking
+		1)])
+
 	(cond
-		[(eq? answer-status #t) answer])
-	(cond
-		[(eqv? cycle 0) answer]
-		[else
+		[(and (eq? enable-shrinking #t) 
+			    (eq? (get-response-status after-test) #f)) 
 
-			(let ([run-tst (test-template
-				(answer-user-property answer)
-				(answer-args-amount answer)
-				(answer-generator answer)
-				(parse-args 
-					(answer-generator-args answer) 
-					params-to-change
-					(random (+ (- shift 1) 1)))
-				limit)])
+		(parse-answer 
+			(run-shrink after-test property 
+			(get-response-failed after-test) depth shrinker '()) 
+			after-test)]
 
-				(cond 
-					[(and (eq? (answer-status answer) #f) (eq? (answer-status run-tst) #t)) answer]
-					[else
-						(default-shrinker run-tst limit params-to-change shift (- cycle 1))]))]))
+		[else after-test])))
 
 
-(define (default-shrinker-iterative answer limit params-to-change shift cycle)
-	; (display (parse-args 
-	; 				(answer-generator-args answer) 
-	; 				params-to-change
-	; 				shift))
-	(cond
-		[(eq? answer-status #t) answer])
-	(cond
-		[(eqv? cycle 0) answer]
-		[else
 
-			(let ([run-tst (test-template
-				(answer-user-property answer)
-				(answer-args-amount answer)
-				(answer-generator answer)
-				(parse-args-iterative 
-					(answer-generator-args answer) 
-					params-to-change
-					shift)
-				limit)])
 
-				(cond 
-					[(and (eq? (answer-status answer) #f) (eq? (answer-status run-tst) #t)) answer]
-					[else
-						(default-shrinker run-tst limit params-to-change shift (- cycle 1))]))]))
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
